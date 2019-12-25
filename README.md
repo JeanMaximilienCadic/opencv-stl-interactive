@@ -30,7 +30,7 @@ The results will be written into a `annoation.txt` file.
 
 ## Authors
 
-* **CADIC Jean Maximilien** - *Initial work* - [PurpleBooth](https://github.com/JeanMaximilienCadic)
+* **CADIC Jean Maximilien**
 
 ## License
 
