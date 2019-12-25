@@ -7,8 +7,8 @@ A simple tool to annotate 3d files online.
 To start install opencv in a conda environment.
 ```
 conda install -c conda-forge opencv
-conda install gnutools-python
-conda install iyo-cad
+conda install -c ninedw gnutools-python
+conda install -c ninedw iyo_cad
 ```
 
 ### How to
