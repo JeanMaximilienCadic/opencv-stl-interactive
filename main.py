@@ -1,7 +1,9 @@
 import cv2
 import os
-from gnutools.utils import listfiles, name, parent
+from gnutools.utils import name, parent
 import numpy as np
+from image_generator import ImageGenerator
+import argparse
 
 __NEXT_CASE__ = 82
 __PREVIOUS_IMG__ = 81
@@ -9,7 +11,7 @@ __VALIDATE_IMG__ = 13
 __NEXT_IMG__ = 83
 __PREVIOUS_CASE__ = 84
 
-def process_dir(dir):
+def process_dir(dir, dimgs):
    def reload_annotations(dir, imgs, ann_file='annotation.txt'):
       try:
          assert os.path.exists(ann_file)
@@ -31,13 +33,12 @@ def process_dir(dir):
       img[:, -10:] = [0, 255, 0]
       return img
 
-   imgs = np.array(listfiles(dir))
-   indices = [int(name(img).split('_')[0]) for img in imgs]
-   imgs = imgs[np.argsort(indices)]
-   k, validated = reload_annotations(dir, imgs)
+   imgs_path = np.array(list(dimgs.keys()))
+   imgs = np.array(list(dimgs.values()))
+   k, validated = reload_annotations(dir, imgs_path)
    print(validated, dir)
    while True:
-      img = cv2.imread(imgs[k])
+      img =  imgs[k]
       img = print_validate(img) if validated else img
       cv2.imshow("", img)
       key = cv2.waitKey()
@@ -46,7 +47,7 @@ def process_dir(dir):
          cv2.imshow("", img)
          key = cv2.waitKey()
          if key == __VALIDATE_IMG__:
-            return __VALIDATE_IMG__, imgs[k]
+            return __VALIDATE_IMG__, imgs_path[k]
          else:
             validated=False
       elif key == __NEXT_IMG__:
@@ -64,12 +65,16 @@ def process_dir(dir):
       elif key == __PREVIOUS_CASE__:
          return __PREVIOUS_CASE__, None
 
+
 if __name__ == '__main__':
-   root = '/mnt/miniIYOProjects/MITSUI/mitsui-prepare/imgs'
-   cases = os.listdir(root)
+   parser = argparse.ArgumentParser(description='Annotate 3d files from 2d projected volumes')
+   parser.add_argument('--root',default='/mnt/9DWNas-02/MITSUI/crown/crown_valid_dataset/2019/USB3')
+   args = parser.parse_args()
+   cases = os.listdir(args.root)
    k = 0
    while True:
-      result, img = process_dir(os.path.join(root, cases[k]))
+      dir = os.path.join(args.root, cases[k])
+      result, img = process_dir(dir,  ImageGenerator(dir))
       if result == __PREVIOUS_CASE__:
          k=k-1
          if k<0:
