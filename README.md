@@ -27,7 +27,7 @@ python main.py --root [root_path]
 
 Use left, right keys to rotate; up, down keys to switch the cases.
 
-The results will be written into a `annoation.txt` file.
+The results will be written into a `annotation.txt` file.
 
 ## Authors
 
