@@ -20,13 +20,10 @@ class ImageGenerator(dict):
             # Using cv2.putText() method
             return cv2.putText(img, string, org, font, fontScale, color, thickness, cv2.LINE_AA)
         # Load the files
-        self.files = dict([(name(file).split('_')[0], file) for file in listfiles(root)])
-        prepa = NMesh(self.files['preparationscan'])
-        crown = NMesh(self.files['crown'])
+        self.files = dict([(name(file), file) for file in listfiles(root)])
+        setmesh = NMesh(self.files['model'])
         # Set the color
-        prepa.set_color([0, 200, 200])
-        crown.set_color([255, 255, 0])
-        setmesh = NMesh(list=[crown, prepa])
+        setmesh.set_color([0, 200, 200])
 
         _img0 = setmesh.shot()
         setmesh.rotate(axis_rotation=0, theta=pi)
@@ -49,18 +46,11 @@ class ImageGenerator(dict):
 
     def export(self, img, plyfile):
         # Load the files
-        anta = NMesh(self.files['antagonistscan'])
-        prepa = NMesh(self.files['preparationscan'])
-        crown = NMesh(self.files['crown'])
+        setmesh = NMesh(self.files['model'])
+        setmesh.set_color([0, 200, 200])
         # Set the color
-        anta.set_color([200, 0, 200])
-        prepa.set_color([0, 200, 200])
-        crown.set_color([255, 255, 0])
-        centroid = crown.centroid
         deg = int(name(img).split("_")[0])
         theta = (deg/360)*2*pi
-        setmesh = NMesh(list=[crown, anta, prepa])
-        setmesh.translate(-centroid)
         setmesh.rotate(axis_rotation=2, theta=theta)
         setmesh.export(plyfile)
 
@@ -70,8 +60,3 @@ class ImageGenerator(dict):
         rot_mat = cv2.getRotationMatrix2D(image_center, angle, 1.0)
         result = cv2.warpAffine(image, rot_mat, image.shape[1::-1], flags=cv2.INTER_LINEAR)
         return result
-
-if __name__=='__main__':
-    for img_path, img in ImageGenerator('/mnt/9DWNas-02/MITSUI/crown/crown_valid_dataset/2019/USB3/test000252').items():
-        cv2.imshow('', img)
-        cv2.waitKey(10)

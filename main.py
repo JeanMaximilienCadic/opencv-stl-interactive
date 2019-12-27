@@ -97,7 +97,7 @@ def up_down_selection():
 
 if __name__ == '__main__':
    parser = argparse.ArgumentParser(description='Annotate 3d files from 2d projected volumes')
-   parser.add_argument('--root', default='/mnt/9DWNas-02/MITSUI/crown/crown_valid_dataset/2018')
+   parser.add_argument('--root', default='samples')
    args = parser.parse_args()
    cases = set(os.listdir(args.root))
    cases_processed = set([line.split(",")[0] for line in open("annotation.txt", "r").readlines()])
@@ -109,7 +109,7 @@ if __name__ == '__main__':
       dir = os.path.join(args.root, cases[k])
       image_generator = ImageGenerator(dir)
       result, img = process_dir(dir,  image_generator)
-     assert result==__VALIDATE_IMG__
-     with open('annotation.txt', 'a') as f:
-        image_generator.export(img, "samples/{name}.ply".format(name=name(parent(img))))
-        f.write(",".join([name(parent(img)), img]) + '\n')
+      assert result==__VALIDATE_IMG__
+      with open('annotation.txt', 'a') as f:
+         image_generator.export(img, "samples/{name}.ply".format(name=name(parent(img))))
+         f.write(",".join([name(parent(img)), img]) + '\n')
