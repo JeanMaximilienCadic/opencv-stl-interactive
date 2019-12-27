@@ -13,10 +13,10 @@ conda install -c ninedw iyo_cad
 ```
 
 ### How to
-You should split each case into a folder. Change the code in the ImageGenerator (l17) to load the desired files to annotate
+You should split each case into a folder. Change the code in the ImageGenerator (l24) to load the desired files to annotate
 ```
 ...
-setmesh = NMesh(list=[crown, prepa])
+setmesh = NMesh(self.files['model'])
 ...
 ```
 
