@@ -74,41 +74,42 @@ def process_dir(dir, dimgs):
       else:
          speed = 1
 
+def up_down_selection():
+   while True:
+      dir = os.path.join(args.root, cases[k])
+      result, img = process_dir(dir,  ImageGenerator(dir))
+      if result == __PREVIOUS_CASE__:
+         k=k-1
+         if k<0:
+            k = len(cases)-1
+      elif result==__NEXT_CASE__:
+         k = k + 1
+         # if k == len(cases):
+         #    print('finished')
+         #    break
+      else:
+         with open('annotation.txt', 'a') as f:
+            f.write(",".join([name(parent(img)), img]) + '\n')
+         print(img,' is validated')
+         k = k + 1
+         if k == len(cases):
+            k = 0
 
 if __name__ == '__main__':
    parser = argparse.ArgumentParser(description='Annotate 3d files from 2d projected volumes')
    parser.add_argument('--root', default='/mnt/9DWNas-02/MITSUI/crown/crown_valid_dataset/2018')
    args = parser.parse_args()
    cases = set(os.listdir(args.root))
-   #cases_processed = set([line.split(",")[0] for line in open("annotation.txt", "r").readlines()])
-   #cases = cases.difference(cases_processed)
+   cases_processed = set([line.split(",")[0] for line in open("annotation.txt", "r").readlines()])
+   cases = cases.difference(cases_processed)
    cases = list(cases)
    k=0
-   # while True:
-   #    dir = os.path.join(args.root, cases[k])
-   #    result, img = process_dir(dir,  ImageGenerator(dir))
-   #    if result == __PREVIOUS_CASE__:
-   #       k=k-1
-   #       if k<0:
-   #          k = len(cases)-1
-   #    elif result==__NEXT_CASE__:
-   #       k = k + 1
-   #       # if k == len(cases):
-   #       #    print('finished')
-   #       #    break
-   #    else:
-   #       with open('annotation.txt', 'a') as f:
-   #          f.write(",".join([name(parent(img)), img]) + '\n')
-   #       print(img,' is validated')
-   #       k = k + 1
-   #       if k == len(cases):
-   #          k = 0
 
    for k in tqdm(range(len(cases)), total=len(cases)):
       dir = os.path.join(args.root, cases[k])
       image_generator = ImageGenerator(dir)
       result, img = process_dir(dir,  image_generator)
-    #  assert result==__VALIDATE_IMG__
-    #  with open('annotation.txt', 'a') as f:
-    #     #image_generator.export(img, "samples/{name}.ply".format(name=name(parent(img))))
-    #     f.write(",".join([name(parent(img)), img]) + '\n')
+     assert result==__VALIDATE_IMG__
+     with open('annotation.txt', 'a') as f:
+        image_generator.export(img, "samples/{name}.ply".format(name=name(parent(img))))
+        f.write(",".join([name(parent(img)), img]) + '\n')
